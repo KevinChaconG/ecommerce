@@ -6,14 +6,15 @@ import { contextCarrito } from '../Contexto/ContextCarrito';
 
 export default function ProviderProducto({ children }: PlantillaReact) {
 
-    let urlAPI = "http://localhost:5050/producto"
+    let urlProducto = "http://localhost:5050/producto"
+    let urlCarrito = "http://localhost:5050/carrito"
     const [producto, setProducto] = useState<Producto[]>([]);
     const [productosCarrito, setProductosCarrito] = useState<Producto[]>([]);
 
     async function cargarProducto() {
 
         try {
-            const resp = await fetch(urlAPI)
+            const resp = await fetch(urlProducto)
             const data = await resp.json()
             setProducto(data)
 
@@ -28,7 +29,7 @@ export default function ProviderProducto({ children }: PlantillaReact) {
     async function guardarProducto(producto: Producto) {
         try {
 
-            const respuesta = await fetch(urlAPI, {
+            const respuesta = await fetch(urlProducto, {
                 method: 'POST',
                 headers: {
                     "content-Type": "application/json"
@@ -51,7 +52,7 @@ export default function ProviderProducto({ children }: PlantillaReact) {
 
         try {
 
-            const respuesta = await fetch(urlAPI + "/" + idProducto, {
+            const respuesta = await fetch(urlProducto + "/" + idProducto, {
                 method: 'DELETE',
                 headers: {
                     "content-Type": "application/json"
@@ -72,7 +73,7 @@ export default function ProviderProducto({ children }: PlantillaReact) {
     async function actualizarProducto(producto: Producto) {
         try {
 
-            const respuesta = await fetch(urlAPI+'/'+producto.id, {
+            const respuesta = await fetch(urlProducto+'/'+producto.id, {
                 method: 'PUT',
                 headers: {
                     "content-Type": "application/json"
@@ -100,13 +101,62 @@ export default function ProviderProducto({ children }: PlantillaReact) {
         console.log(producto)
     }, [producto])
 
-    function agregarCarrito(producto: Producto) {
-        alert('Producto agregado al carrito')
-        setProductosCarrito([...productosCarrito, producto]);
+    //function agregarCarrito(producto: Producto) {
+     //   alert('Producto agregado al carrito')
+       // setProductosCarrito([...productosCarrito, producto]);
+    //}
+
+    async function agregarCarrito(producto:Producto){
+
+        try {
+
+            const respuesta=await fetch(urlCarrito,{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ productoId: producto.id })
+            })
+
+            const resultado=await respuesta.json()
+            alert("Producto agregado al carrito correctamente")
+            setProductosCarrito([...productosCarrito, producto])
+
+            cargarProducto()
+            
+        } catch (error) {
+            alert("Ocurrió un error"+error)
+            
+        }
+
     }
 
+       async function eliminarCarrito(idCarrito: number) {
+
+        try {
+
+            const respuesta = await fetch(urlCarrito + "/" + idCarrito, {
+                method: 'DELETE',
+                headers: {
+                    "content-Type": "application/json"
+                }
+            })
+
+            const resultado = await respuesta.json()
+            alert("Producto eliminado del carrito")
+
+            cargarProducto()
+
+        } catch (error) {
+            alert("Ocurrió un error al intentar eliminar el Producto")
+        }
+
+    }
+
+
+
     return (
-        <contextCarrito.Provider value={{ producto, productosCarrito, agregarCarrito, guardarProducto, eliminarProducto, actualizarProducto}}>
+        <contextCarrito.Provider value={{ producto, productosCarrito, agregarCarrito, guardarProducto, eliminarProducto, actualizarProducto, eliminarCarrito}}>
             {children}
         </contextCarrito.Provider>
     )

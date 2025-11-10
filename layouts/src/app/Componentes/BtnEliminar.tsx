@@ -8,7 +8,7 @@ export default function BtnEliminar({producto}:ProductoProp) {
     }
   return (
     <div>
-        <button className='btn btn-danger' onClick={eliminarProduct}>Elimnar Producto</button>
+        <button className='btn btn-danger' onClick={eliminarProduct}>Eliminar Producto</button>
     </div>
   )
 }

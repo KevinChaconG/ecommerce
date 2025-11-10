@@ -7,6 +7,7 @@ export const contextCarrito=createContext({
     agregarCarrito: (producto: Producto) =>{},
     guardarProducto: (producto:Producto)=>{},
     eliminarProducto:(idProducto:number)=>{},
-    actualizarProducto:(producto:Producto)=>{}
+    actualizarProducto:(producto:Producto)=>{},
+    eliminarCarrito:(idCarrito:number)=>{},
     
 })
